@@ -1,0 +1,12 @@
+build
+configure
+Makefile
+*.cache
+*.m4
+*.in
+*.in~
+*.framework
+.deps
+xcuserdata
+.DS_Store
+references

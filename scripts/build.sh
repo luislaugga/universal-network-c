@@ -19,7 +19,7 @@ echo "Version" `tail version.m4`
 
 # Autogen + make check
 autoreconf -fvi
-mkdir build/
-cd build/
+mkdir $scriptdir/../build/
+cd $scriptdir/../build
 ../configure
 make check

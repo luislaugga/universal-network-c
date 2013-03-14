@@ -7,6 +7,8 @@
 #
 
 #!/bin/sh
+scriptdir=`dirname $0`
+cd $scriptdir/../
 rm ./*/*.in*
 rm ./*.in*
 rm config.log
