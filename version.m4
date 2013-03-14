@@ -1,1 +1,0 @@
-m4_define([VERSION_NUMBER], 0.2-139-g582a493)
