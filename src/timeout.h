@@ -27,6 +27,7 @@ typedef void (^timeout_block_t)(void);
 
 void timeout_create(timeout_t * timeout, void (*callback)(void *), void * context, long milliseconds);
 void timeout_create_block(timeout_t * timeout, timeout_block_t block, long milliseconds);
+void timeout_create_queue(timeout_t * timeout, dispatch_queue_t queue, long milliseconds, timeout_block_t block);
 void timeout_destroy(timeout_t * timeout);
 
 #endif

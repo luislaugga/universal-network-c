@@ -66,6 +66,31 @@ void timeout_create_block(timeout_t * timeout, timeout_block_t block, long milli
 	}
 }
 
+void timeout_create_queue(timeout_t * timeout, dispatch_queue_t queue, long milliseconds, timeout_block_t block)
+{
+	if(timeout->valid)
+		timeout_destroy(timeout); // Destroy any valid timeout before creating a new one
+    
+	timeout->timerDispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+	
+	if(timeout->timerDispatchSource)
+	{
+		dispatch_source_set_timer(timeout->timerDispatchSource,
+								  dispatch_time(DISPATCH_TIME_NOW, milliseconds * kNSEC_PER_MILLISEC),
+								  DISPATCH_TIME_FOREVER,
+								  kLEEWAY); // Fire once
+        
+		dispatch_source_set_event_handler(timeout->timerDispatchSource, ^{
+			block();
+			timeout->valid = false;
+			dispatch_release(timeout->timerDispatchSource);
+		});
+		
+        timeout->valid = true; // Mark as valid timeout
+		dispatch_resume(timeout->timerDispatchSource); // Resume
+	}
+}
+
 void timeout_destroy(timeout_t * timeout)
 {
 	if(timeout->valid)
