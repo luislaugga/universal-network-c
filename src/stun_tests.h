@@ -3,7 +3,7 @@
 * Licensed under a Creative Commons Attribution, Share Alike 3.0 Unported License (CC BY-SA 3.0).
 *
 * stun_test.h
-* Universal
+* universal-network-c
 */
 
 #ifndef __universal_network_stun_test_h__

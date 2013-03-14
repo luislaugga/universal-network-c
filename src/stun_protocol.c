@@ -3,7 +3,7 @@
 * Licensed under a Creative Commons Attribution, Share Alike 3.0 Unported License (CC BY-SA 3.0).
 *
 * stun_protocol.c
-* Universal
+* universal-network-c
 */
 
 #include "stun_protocol.h"

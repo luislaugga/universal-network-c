@@ -18,7 +18,7 @@
 #include <assert.h>
 #include <Block.h>
 
-#include "network.h"
+#include "universal_network_c.h"
 
 #define LOG_SUITE_START(suitename) printf("Testing %s\n", suitename)
 #define LOG_TEST_START //printf("Starting: %s\n", __PRETTY_FUNCTION__)
