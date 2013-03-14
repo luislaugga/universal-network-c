@@ -56,6 +56,31 @@ static void test_timeout_block()
 	LOG_TEST_END;
 }
 
+static void test_timeout_queue()
+{
+	LOG_TEST_START;
+	
+	__block int blockTimeoutDidFire = 0;
+	
+	timeout_block_t test_timeoutBlock = ^{
+		blockTimeoutDidFire = 1;
+	};
+
+  dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+
+	timeout_t test_timeout;
+	timeout_create_queue(&test_timeout, queue, 1000, test_timeoutBlock);
+	
+	sleep(2);
+	
+	assert(blockTimeoutDidFire);
+
+	timeout_destroy(&test_timeout);
+
+	LOG_TEST_END;
+}
+
+
 static void test_timeout_create_destroy()
 {
 	LOG_TEST_START;
@@ -101,6 +126,7 @@ int main(void)
 
 	test_timeout();
 	test_timeout_block();
+	test_timeout_queue();
 	test_timeout_create_destroy();
 	
 	return 0;
