@@ -54,7 +54,7 @@ static void test_pack_unpack_UserCreateObject()
 	TransactionObjectUserCreate packUserCreate;
 	TransactionObjectUserCreate unpackUserCreate;
 
-	packUserCreate.uid = gen_huid();
+  packUserCreate.uid = 29293299292; // random
 	sprintf(packUserCreate.name, "First Last");
 	sprintf(packUserCreate.email, "user@domain.com");
 		
@@ -81,8 +81,8 @@ static void test_pack_unpack_ResourceCreateObject()
 	TransactionObjectResourceCreate packResourceCreate;
 	TransactionObjectResourceCreate unpackResourceCreate;
 
-	packResourceCreate.rid = gen_huid();
-	packResourceCreate.uid = gen_huid();
+  packResourceCreate.rid = 393939392329;
+  packResourceCreate.uid = 2323289382938;
 	uint8_t data[10] = "0123456789";
 	memcpy(packResourceCreate.data, data, 10);
 	packResourceCreate.length = 10;

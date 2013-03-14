@@ -9,8 +9,8 @@
 # Include version m4 macro
 m4_include([version.m4])
 
-AC_PREREQ(2.50)
-AC_INIT(backend, VERSION_NUMBER, [bugs@laugga.com])
+AC_PREREQ(2.59)
+AC_INIT(backend, VERSION_NUMBER, [dev@laugga.com])
 AC_CONFIG_AUX_DIR(build)
 AC_CONFIG_HEADER([config.h])
 
@@ -19,7 +19,7 @@ AC_CANONICAL_TARGET
 AC_CANONICAL_BUILD
 
 AC_PROG_CC([clang])
-AM_INIT_AUTOMAKE([-Wall -Werror foreign])
+AM_INIT_AUTOMAKE([1.11 foreign no-define])
 
 # Checking for target system and setting custom configuration
 # libdispatch and fblocks required in linux systems

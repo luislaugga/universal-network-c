@@ -3,7 +3,7 @@
 # Licensed under a Creative Commons Attribution, Share Alike 3.0 Unported License (CC BY-SA 3.0).
 #
 # test/Makefile.am
-# lBackend
+# universa-network-c
 #
 
 testdir = $(top_srcdir)/build/test
@@ -24,7 +24,7 @@ TESTS = \
 	test_net_socket \
 	test_stream \
 	test_transaction \
-	test_stun \
+	test_stun 
 				 
 check_PROGRAMS = \
 	test_pool \
@@ -42,7 +42,7 @@ check_PROGRAMS = \
 	test_net_socket \
 	test_stream \
 	test_transaction \
-	test_stun \
+	test_stun 
 				 
 AM_CPPFLAGS = -DTEST -I$(top_srcdir)/src
 	
@@ -63,8 +63,7 @@ SOURCES = \
 	$(top_srcdir)/src/list.c \
 	$(top_srcdir)/src/bitstream.c \
 	$(top_srcdir)/src/hashtable.c \
-	$(top_srcdir)/src/timeout.c \
-	$(top_srcdir)/src/huid.c 
+	$(top_srcdir)/src/timeout.c 
 		
 STUN_SOURCES = \
 	$(top_srcdir)/src/stun.c \
@@ -84,7 +83,6 @@ test_stream_flow_SOURCES = unit/test_stream_flow.c $(SOURCES) $(STUN_SOURCES)
 test_stream_reliability_SOURCES = unit/test_stream_reliability.c $(SOURCES) $(STUN_SOURCES)
 test_stream_protocol_SOURCES = unit/test_stream_protocol.c $(SOURCES) $(STUN_SOURCES)
 test_transaction_protocol_SOURCES = unit/test_transaction_protocol.c $(SOURCES) $(STUN_SOURCES)
-test_huid_SOURCES = unit/test_huid.c $(SOURCES)
 
 test_net_socket_SOURCES = functional/test_net_socket.c $(SOURCES) $(STUN_SOURCES)
 test_transaction_SOURCES = functional/test_transaction.c $(SOURCES) $(STUN_SOURCES)

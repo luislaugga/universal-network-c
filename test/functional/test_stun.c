@@ -118,7 +118,7 @@ static void test_stun_client1()
 	NetError netError;
 	net_socket_t socket = net_socket_create(&netError, AF_INET, 0, 0);
 	
-	const char * testStunServerHostname = "backend.laugga.com";
+	const char * testStunServerHostname = "universal.laugga.com";
 	// const unsigned short testStunServerPort = kStunServerDefaultPort;
 	// 
 	// net_addr_t testStunServerAddr;
@@ -254,7 +254,7 @@ static void test_socket_stun()
 	StunDidFailResolve clientDidFailResolve = ^(stun_t c) {
 		stunDestroy(c);
 	};
-	const char * testStunServerHostname = "backend.laugga.com";
+	const char * testStunServerHostname = "universal.laugga.com";
 	stun_t stun = stunCreate(test_receiveSocket, testStunServerHostname, clientDidResolve, clientDidFailResolve);
 	assert(stun);
 	stunResolve(stun);
@@ -357,7 +357,7 @@ static void test_socket_stun_forward()
 	StunDidFailResolve clientDidFailResolve = ^(stun_t c) {
 		stunDestroy(c);
 	};
-	const char * testStunServerHostname = "backend.laugga.com";
+	const char * testStunServerHostname = "universal.laugga.com";
 	stun_t stun = stunCreate(forward_test_receiveSocket, testStunServerHostname, clientDidResolve, clientDidFailResolve);
 	assert(stun);
 	stunResolve(stun);

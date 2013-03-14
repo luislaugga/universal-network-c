@@ -12,8 +12,9 @@
 #include "protocol.h"
 #include "network.h"
 #include "bitstream.h"
-#include "huid.h"
 #include "net.h"
+
+typedef uint64_t huid_t;
 
 /*!
  * @header
