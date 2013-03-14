@@ -6,10 +6,10 @@
 * universal-network-c
 */
 
-#ifndef __lUniversal_network_protocol_h__
-#define __lUniversal_network_protocol_h__
+#ifndef __universal_network_protocol_h__
+#define __universal_network_protocol_h__
 
-#include "network.h"
+#include "universal_network_c.h"
 #include "bitstream.h"
 #include "net.h"
 

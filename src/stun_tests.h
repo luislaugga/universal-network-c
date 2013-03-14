@@ -6,8 +6,8 @@
 * Universal
 */
 
-#ifndef __lNetwork_stun_test_h__
-#define __lNetwork_stun_test_h__
+#ifndef __universal_network_stun_test_h__
+#define __universal_network_stun_test_h__
 
 #include "timeout.h"
 #include "net.h"

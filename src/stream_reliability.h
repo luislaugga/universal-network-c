@@ -6,8 +6,8 @@
 * universal-network-c
 */
 
-#ifndef __lUniversal_network_stream_reliability_h__
-#define __lUniversal_network_stream_reliability_h__
+#ifndef __universal_network_stream_reliability_h__
+#define __universal_network_stream_reliability_h__
 
 #include <stdbool.h>
 #include <stdlib.h>

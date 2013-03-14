@@ -6,8 +6,8 @@
 * Universal
 */
 
-#ifndef __lNetwork_stun_internal_h__
-#define __lNetwork_stun_internal_h__
+#ifndef __universal_network_stun_internal_h__
+#define __universal_network_stun_internal_h__
 
 void stunRunNextTest(stun_t , StunTest * );
 

@@ -7,7 +7,7 @@
 */
 
 #include "net_addr.h"
-#include "network.h"
+#include "universal_network_c.h"
 
 void net_addr_zero(net_addr_t * addr)
 {

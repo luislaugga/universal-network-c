@@ -8,7 +8,7 @@
 
 #include "stun_tests.h"
 #include "stun_utils.h"
-#include "network.h"
+#include "universal_network_c.h"
 
 void stunTestStartBasicBinding(StunTest * test, StunConfig * config, StunResults * results)
 {	

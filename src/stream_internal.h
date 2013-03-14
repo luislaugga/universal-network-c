@@ -6,11 +6,11 @@
 * universal-network-c
 */
 
-#ifndef __lUniversal_network_stream_internal_h__
-#define __lUniversal_network_stream_internal_h__
+#ifndef __universal_network_stream_internal_h__
+#define __universal_network_stream_internal_h__
 
 #include "net.h"
-#include "network.h"
+#include "universal_network_c.h"
 #include "hashtable.h"
 #include "bitstream.h"
 

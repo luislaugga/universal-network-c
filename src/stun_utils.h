@@ -6,8 +6,8 @@
 * Universal
 */
 
-#ifndef __lNetwork_stun_utils_h__
-#define __lNetwork_stun_utils_h__
+#ifndef __universal_network_stun_utils_h__
+#define __universal_network_stun_utils_h__
 
 #include <stdbool.h>
 

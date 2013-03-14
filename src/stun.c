@@ -8,7 +8,7 @@
 
 #include "stun.h"
 #include "stun_internal.h"
-#include "network.h"
+#include "universal_network_c.h"
 
 stun_t stunCreate(net_socket_t socket, const char * serverHostname, StunDidResolve stunDidResolve, StunDidFailResolve stunDidFailResolve)
 {

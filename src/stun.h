@@ -6,8 +6,8 @@
 * Universal
 */
 
-#ifndef __lNetwork_stun_h__
-#define __lNetwork_stun_h__
+#ifndef __universal_network_stun_h__
+#define __universal_network_stun_h__
 
 #include "stun_tests.h"
 

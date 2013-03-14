@@ -6,8 +6,8 @@
 * universal-network-c
 */
 
-#ifndef __lUniversal_network_stream_h__
-#define __lUniversal_network_stream_h__
+#ifndef __universal_network_stream_h__
+#define __universal_network_stream_h__
 
 #include "stream_protocol.h"
 

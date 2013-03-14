@@ -7,7 +7,7 @@
 */
 
 #include "net_error.h"
-#include "network.h"
+#include "universal_network_c.h"
 
 NetError netErrorPosix(PosixError posixError)
 {

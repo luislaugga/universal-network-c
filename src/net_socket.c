@@ -8,7 +8,7 @@
 
 #include "net_socket.h"
 #include "net_socket_internal.h"
-#include "network.h"
+#include "universal_network_c.h"
 
 #include <dispatch/dispatch.h>
 #include <errno.h>

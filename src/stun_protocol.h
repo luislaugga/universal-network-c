@@ -6,8 +6,8 @@
 * Universal
 */
 
-#ifndef __lNetwork_stun_protocol_h__
-#define __lNetwork_stun_protocol_h__
+#ifndef __universal_network_stun_protocol_h__
+#define __universal_network_stun_protocol_h__
 
 #include "bitstream.h"
 #include "net_packet.h"

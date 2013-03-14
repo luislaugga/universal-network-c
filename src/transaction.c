@@ -9,7 +9,7 @@
 #include "transaction.h"
 #include "transaction_internal.h"
 #include "transaction_protocol.h"
-#include "network.h"
+#include "universal_network_c.h"
 
 #pragma mark -
 #pragma mark Global setup

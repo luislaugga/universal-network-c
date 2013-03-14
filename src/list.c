@@ -7,7 +7,7 @@
 */
 
 #include "list.h"
-#include "network.h"
+#include "universal_network_c.h"
 
 #define kListNullNode 0
 #define mListNode(list, index) ((list_node_t)(list->reserved_mem + index*sizeof(struct list_node_s))) // Retrieves node using index within reserved memory
