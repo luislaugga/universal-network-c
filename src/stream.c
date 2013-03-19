@@ -244,21 +244,23 @@ void streamAdd(StreamConfiguration * config, const net_addr_t * streamRemoteAddr
 {
     // Copy address (operation is asynchronous)
     net_addr_t streamAddress;
-    net_addr_copy(&streamAddress, streamRemoteAddress);
+    net_addr_copy(&streamAddress, streamRemoteAddress); // copy to stack variable, to be captured by the block
+   
+    mNetworkLog("streamAdd %s:%d", inet_ntoa(streamAddress.sin_addr), ntohs(streamAddress.sin_port));
     
     dispatch_async(config->streamDispatchQueue, ^{
         
         // Find
 		Stream * stream = list_find(config->streams, ^(list_object_t object){
 			Stream * _stream = (Stream *)object;
-			return net_addr_is_equal(&_stream->address, streamRemoteAddress);
+			return net_addr_is_equal(&_stream->address, &streamAddress);
 		});
         
         // Create and add if doesn't exist yet
 		if(!stream)
 		{
             // Create
-			stream = streamCreate(streamRemoteAddress);
+			stream = streamCreate(&streamAddress);
             
             // Add
 			list_add(config->streams, stream);
@@ -398,6 +400,11 @@ void streamSocketReceiveCallback(void * context, net_packet_t packet)
 				Stream * _stream = (Stream *)object;
 				return net_addr_is_equal(&_stream->address, &packet->addr);
 			});
+            
+            if(stream == NULL)
+            {
+                streamAdd(config, &packet->addr); // TODO improve...
+            }
 			
 			if(stream)
 			{
