@@ -19,9 +19,14 @@ Network utilities, implemented in c using libdispatch:
 
 ## Building
 
-    % ./scripts/build.sh
-    % cd build
+Run tests:
+
+    % ./scripts/autogen.sh
+    % ./configure
     % make check
+
+Remove build files:
+
     % ./scripts/clean.sh
 
 ## Known Issues
