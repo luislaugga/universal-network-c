@@ -41,14 +41,22 @@ UnpackResult streamProtocolUnpackHeader(bitstream_t * bitstream, Sequence * sequ
 
 void streamObjectSetup(StreamObject * object)
 {
-    object->length = 0;
-    object->bitstream = bitstream_create(object->data, kStreamObjectMaxLength);
+  object->length = 0;
+  object->tag = 0;
+}
+
+void streamObjectCopyData(StreamObject * object, uint8_t * data, unsigned int length)
+{
+  if((object->length + length) <= kStreamObjectDataMaxLength)
+  {
+    memcpy(object->data+object->length, data, length);
+    object->length += length; 
+  }
 }
 
 void streamProtocolPackData(bitstream_t * bitstream, StreamObject * object)
 {
-    object->length = object->bitstream.offset; // set object's length
-    
+  bitstream_write_uint64(bitstream, object->tag); // tag (use bitstream)
 	bitstream_write_uint16(bitstream, object->length); // length (use bitstream)
 	bitstream_write_bytes(bitstream, object->data, object->length); // data
 }
@@ -57,9 +65,12 @@ UnpackResult streamProtocolUnpackData(bitstream_t * bitstream, StreamObject * ob
 {
 	UnpackResult unpackResult = UnpackValid;
 	
-    bitstream_read_uint16(bitstream, &object->length); // length (use bitstream)
+  bitstream_read_uint64(bitstream, &object->tag); // length (use bitstream)
+  bitstream_read_uint16(bitstream, &object->length); // length (use bitstream)
 	bitstream_read_bytes(bitstream, object->data, object->length); // data
     
-    return unpackResult;
+  mNetworkLog("streamProtocolUnpackData %llu => %d", object->tag, object->length);
+    
+  return unpackResult;
 }
 

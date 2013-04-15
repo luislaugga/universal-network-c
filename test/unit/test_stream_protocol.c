@@ -45,12 +45,13 @@ static void test_stream_protocol_data()
 	uint8_t data[data_length];
 	bitstream_t bitstream = bitstream_create(data, data_length);
 	
-	const char * test_string = "test_stream_protocol_data";
+	const char * test_string = "test_stream_protocol_data\0";
 	
 	StreamObject test_object;
 	streamObjectSetup(&test_object);
-	bitstream_write_str(&test_object.bitstream, test_string);
-	
+  test_object.tag = 49284398493;
+  streamObjectCopyData(&test_object, (uint8_t *)test_string, strlen(test_string));
+  
 	StreamObject unpack_test_object;
 	streamObjectSetup(&unpack_test_object);
 	
@@ -58,6 +59,7 @@ static void test_stream_protocol_data()
 	bitstream_reset(&bitstream);
 	streamProtocolUnpackData(&bitstream, &unpack_test_object);
 	
+	assert(unpack_test_object.tag == test_object.tag);
 	assert(unpack_test_object.length == test_object.length);
 	assert(memcmp(unpack_test_object.data, test_object.data, test_object.length) == 0);
 	

@@ -71,6 +71,134 @@ void streamTeardown(StreamConfiguration * config)
 }
 
 #pragma mark -
+#pragma mark Pause/Resume
+
+void streamSuspend(StreamConfiguration * config)
+{
+    mNetworkPrettyLog;
+    
+	//dispatch_async(config->streamDispatchQueue, ^{
+    // Always suspend
+    if(config->active == true)
+    {
+        dispatch_suspend(config->streamDispatchTimer);
+        config->active = false;
+        
+        // Remove all streams
+        //            list_iterate(config->streams, ^(list_object_t object){
+        //                Stream * stream = (Stream *)object;
+        //                list_remove(config->streams, stream);
+        //            });
+        
+        // callback
+        config->suspendCallback(config->context);
+    }
+	//});
+}
+
+void streamResume(StreamConfiguration * config)
+{
+	//dispatch_async(config->streamDispatchQueue, ^{
+    if(config->active == false)
+    {
+        // Resume only if stream list is not empty
+        if(list_is_empty(config->streams) == false)
+        {
+            config->active = true;
+            dispatch_resume(config->streamDispatchTimer);
+        }
+    }
+	//});
+}
+
+#pragma mark -
+#pragma mark Add/Remove
+
+void streamAdd(StreamConfiguration * config, const net_addr_t * streamRemoteAddress)
+{
+    // Copy address (operation is asynchronous)
+    net_addr_t streamAddress;
+    net_addr_copy(&streamAddress, streamRemoteAddress); // copy to stack variable, to be captured by the block
+    
+    mNetworkLog("streamAdd %s:%d", inet_ntoa(streamAddress.sin_addr), ntohs(streamAddress.sin_port));
+    
+    dispatch_async(config->streamDispatchQueue, ^{
+        
+        // Find
+		Stream * stream = list_find(config->streams, ^(list_object_t object){
+			Stream * _stream = (Stream *)object;
+			return net_addr_is_equal(&_stream->address, &streamAddress);
+		});
+        
+        // Create and add if doesn't exist yet
+		if(!stream)
+		{
+            // Create
+			stream = streamCreate(&streamAddress);
+            
+            // Add
+			list_add(config->streams, stream);
+            
+            // Log...
+            mNetworkLog("Added remote stream %d to local %d", net_addr_get_port(&stream->address), net_addr_get_port(&config->address));
+            net_addr_log(&stream->address);
+            
+            // Resume timer when list has at least one
+            streamResume(config);
+		}
+    });
+}
+
+void streamRemove(StreamConfiguration * config, const net_addr_t * streamRemoteAddress)
+{
+    // Copy address (operation is asynchronous)
+    net_addr_t streamAddress;
+    net_addr_copy(&streamAddress, streamRemoteAddress);
+    
+	dispatch_async(config->streamDispatchQueue, ^{
+        
+        // Find
+        Stream * stream = list_find(config->streams, ^(list_object_t object){
+			Stream * _stream = (Stream *)object;
+			return net_addr_is_equal(&_stream->address, &streamAddress);
+		});
+        
+        // Remove if exists
+        if(stream)
+        {
+            mNetworkLog("Remove stream from list with address:");
+            net_addr_log((net_addr_t*)&streamAddress);
+            
+            list_remove(config->streams, stream);
+            
+            // Suspend timer when list is empty
+            if(list_is_empty(config->streams))
+                streamSuspend(config);
+        }
+        else
+        {
+            mNetworkLog("No stream found for address:");
+            net_addr_log((net_addr_t*)&streamAddress);
+        }
+	});
+}
+
+bool streamDoesExist(StreamConfiguration * config, const net_addr_t * streamRemoteAddress)
+{
+	Stream * stream = list_find(config->streams, ^(list_object_t object){
+		Stream * _stream = (Stream *)object;
+		return net_addr_is_equal(&_stream->address, streamRemoteAddress);
+	});
+    
+	return (stream != NULL);
+}
+
+bool streamListIsEmpty(StreamConfiguration * config)
+{
+	return list_is_empty(config->streams);
+}
+
+#pragma mark -
 #pragma mark Stream
 
 Stream * streamCreate(const net_addr_t * address)
@@ -132,6 +260,8 @@ void streamSend(StreamConfiguration * config, Stream * stream, StreamObject * ob
 		
 		if(packet)
 		{
+            mNetworkLog("streamObject has %d bytes", object->length);
+            
 			bitstream_t * bitstream = &packet->bitstream;
 	
 			// Pack Header
@@ -168,7 +298,7 @@ void streamReceive(StreamConfiguration * config, Stream * stream, Sequence seque
 		streamReliabilityPacketReceived(&stream->reliability, sequence, ack, ackBitField);
 	
 		// Forward object
-		config->receiveCallback(config->context, &stream->address, &object->bitstream);
+		config->receiveCallback(config->context, &stream->address, object);
         
 	}
 }
@@ -194,134 +324,6 @@ void streamLog(Stream * stream)
 					stream->reliability.sentBandwidth, 
 					stream->reliability.ackedBandwidth, 
 					stream->flow.mode == StreamFlowModeGood ? "good" : "bad");
-}
-
-#pragma mark -
-#pragma mark Pause/Resume
-
-void streamSuspend(StreamConfiguration * config)
-{
-    mNetworkPrettyLog;
-    
-	//dispatch_async(config->streamDispatchQueue, ^{
-		// Always suspend
-		if(config->active == true)
-		{
-			dispatch_suspend(config->streamDispatchTimer);
-			config->active = false;
-            
-            // Remove all streams		
-//            list_iterate(config->streams, ^(list_object_t object){
-//                Stream * stream = (Stream *)object;
-//                list_remove(config->streams, stream);		
-//            });
-            
-            // callback
-            config->suspendCallback(config->context);
-		}
-	//});
-}
-
-void streamResume(StreamConfiguration * config)
-{
-	//dispatch_async(config->streamDispatchQueue, ^{
-		if(config->active == false)
-		{
-			// Resume only if stream list is not empty
-			if(list_is_empty(config->streams) == false)
-			{
-				config->active = true;
-				dispatch_resume(config->streamDispatchTimer);	
-			}
-		}
-	//});
-}
-
-#pragma mark -
-#pragma mark Add/Remove 
-
-void streamAdd(StreamConfiguration * config, const net_addr_t * streamRemoteAddress)
-{
-    // Copy address (operation is asynchronous)
-    net_addr_t streamAddress;
-    net_addr_copy(&streamAddress, streamRemoteAddress); // copy to stack variable, to be captured by the block
-   
-    mNetworkLog("streamAdd %s:%d", inet_ntoa(streamAddress.sin_addr), ntohs(streamAddress.sin_port));
-    
-    dispatch_async(config->streamDispatchQueue, ^{
-        
-        // Find
-		Stream * stream = list_find(config->streams, ^(list_object_t object){
-			Stream * _stream = (Stream *)object;
-			return net_addr_is_equal(&_stream->address, &streamAddress);
-		});
-        
-        // Create and add if doesn't exist yet
-		if(!stream)
-		{
-            // Create
-			stream = streamCreate(&streamAddress);
-            
-            // Add
-			list_add(config->streams, stream);
-            
-            // Log...
-            mNetworkLog("Added remote stream %d to local %d", net_addr_get_port(&stream->address), net_addr_get_port(&config->address));
-            net_addr_log(&stream->address);
-            
-            // Resume timer when list has at least one
-            streamResume(config);
-		}
-    });
-}
-
-void streamRemove(StreamConfiguration * config, const net_addr_t * streamRemoteAddress)
-{
-    // Copy address (operation is asynchronous)
-    net_addr_t streamAddress;
-    net_addr_copy(&streamAddress, streamRemoteAddress);
-    
-	dispatch_async(config->streamDispatchQueue, ^{
-    
-        // Find
-        Stream * stream = list_find(config->streams, ^(list_object_t object){
-			Stream * _stream = (Stream *)object;
-			return net_addr_is_equal(&_stream->address, &streamAddress);
-		});
-        
-        // Remove if exists
-        if(stream)
-        {
-            mNetworkLog("Remove stream from list with address:");
-            net_addr_log((net_addr_t*)&streamAddress);
-            
-            list_remove(config->streams, stream);
-            
-            // Suspend timer when list is empty
-            if(list_is_empty(config->streams))
-                streamSuspend(config);
-        }
-        else 
-        {
-            mNetworkLog("No stream found for address:");
-            net_addr_log((net_addr_t*)&streamAddress);
-        }
-	});
-}
-
-bool streamDoesExist(StreamConfiguration * config, const net_addr_t * streamRemoteAddress)
-{
-	Stream * stream = list_find(config->streams, ^(list_object_t object){
-		Stream * _stream = (Stream *)object;
-		return net_addr_is_equal(&_stream->address, streamRemoteAddress);
-	});
-		
-	return (stream != NULL);
-}
-
-bool streamListIsEmpty(StreamConfiguration * config)
-{
-	return list_is_empty(config->streams);
 }
 
 #pragma mark -
@@ -351,7 +353,8 @@ void streamTimerCallback(void * context)
 			// Retrieve application update data
 			StreamObject updateObject;
             streamObjectSetup(&updateObject);
-			config->updateCallback(config->context, &updateObject.bitstream); // Use bitstream to pack data
+			config->updateCallback(config->context, &updateObject); // Use bitstream to pack data
+            mNetworkLog("streamObject has %d bytes", updateObject.length);
             StreamObject * updateObjectPtr = &updateObject;
 			
             //mNetworkLog("Got data %d", net_addr_get_port(&config->address));

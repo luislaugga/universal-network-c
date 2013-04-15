@@ -25,15 +25,22 @@
  * Data-Exchange Format:
  * 0            15 16          31 32                         63 
  * +--------------+--------------+--------------+--------------+
- * | Sequence Nr. | Ack Nr.      | Ack Bit Field 		       | 
+ * | Sequence Nr.                | Ack Nr.                     | 4+4 Bytes
+ * +--------------+--------------+--------------+--------------+ 
+ * | Ack Bit Field 		           |                               4 Bytes
+ * +-----------------------------------------------------------+
+ * | Tag                                                       | 8 Bytes
  * +--------------+--------------+--------------+--------------+
- * |   	          Body (Length-Data)                           |
+ * | Body (length)|                                              2 Bytes
+ * +--------------+--------------+--------------+--------------+
+ * | Body (data)                                               | ? Bytes
+ * | ...                                                       | 
  * +--------------+--------------+--------------+--------------+
  *
  * Data: Application specific, length must conform to packet's max. size 
  */
 
-#define kStreamObjectMaxLength kProtocolMaxLength
+#define kStreamObjectDataMaxLength (kProtocolMaxLength-22)
 
 /*!
  * @typedef SequenceNr
@@ -62,12 +69,13 @@ UnpackResult streamProtocolUnpackHeader(bitstream_t * bitstream, Sequence *, Ack
  * @discussion
  */
 typedef struct {
-	uint8_t data[kStreamObjectMaxLength];
+	uint8_t data[kStreamObjectDataMaxLength];
     unsigned int length;
-    bitstream_t bitstream;
+    uint64_t tag;
 } StreamObject;
 
 void streamObjectSetup(StreamObject *);
+void streamObjectCopyData(StreamObject *, uint8_t *, unsigned int);
 
 void streamProtocolPackData(bitstream_t * bitstream, StreamObject *);
 UnpackResult streamProtocolUnpackData(bitstream_t * bitstream, StreamObject *);

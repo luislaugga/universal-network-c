@@ -32,7 +32,7 @@
  *
  */
 
-#define kProtocolMaxLength kNetPacketMaxLen
+#define kProtocolMaxLength (kNetPacketMaxLen-3)
 
 typedef enum {
 	UnpackValid = 0, // Valid protocol

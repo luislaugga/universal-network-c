@@ -27,8 +27,8 @@
  * flow control on top of UDP.
  */
 
-typedef void (*StreamUpdateCallback)(void *, bitstream_t *); // Update - Send data
-typedef void (*StreamReceiveCallback)(void *, net_addr_t *, bitstream_t *); // Receive data
+typedef void (*StreamUpdateCallback)(void *, StreamObject *); // Update - Send data
+typedef void (*StreamReceiveCallback)(void *, net_addr_t *, StreamObject *); // Receive data
 typedef void (*StreamTimeoutCallback)(void *, net_addr_t *); // Timeout
 typedef void (*StreamSuspendCallback)(void *); // Suspend
 
